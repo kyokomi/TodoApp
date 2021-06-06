@@ -130,18 +130,26 @@ fun MainScreen(
         modifier = modifier,
     ) {
         items(items = items) { item ->
-            PhotographerCard(item, modifier = Modifier.fillMaxWidth())
+            PhotographerCard(
+                item = item,
+                onClickItem = onRemoveItem,
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
     }
 }
 
 @Composable
-fun PhotographerCard(item: TodoItem, modifier: Modifier = Modifier) {
+fun PhotographerCard(
+    item: TodoItem,
+    onClickItem: (TodoItem) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier
             .clip(RoundedCornerShape(4.dp))
             .background(MaterialTheme.colors.surface)
-            .clickable { /* ignored onClick */ }
+            .clickable { onClickItem(item) }
     ) {
         Image(
             painter = rememberCoilPainter(

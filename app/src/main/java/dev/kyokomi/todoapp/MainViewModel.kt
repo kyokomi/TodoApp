@@ -17,6 +17,8 @@ class MainViewModel : ViewModel() {
 
     // event: removeItem
     fun removeItem(item: TodoItem) {
-        _todoItems.value = _todoItems.value.also { removeItem(item) }
+        _todoItems.value = _todoItems.value!!.toMutableList().also {
+            it.remove(item)
+        }
     }
 }
