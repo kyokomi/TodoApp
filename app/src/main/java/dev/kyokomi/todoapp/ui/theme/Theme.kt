@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -35,9 +36,20 @@ fun TodoAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composabl
         LightColorPalette
     }
 
+    val textColor = if (darkTheme) {
+        Color.White
+    } else {
+        Color.Unspecified
+    }
+
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = Typography.copy(
+            subtitle1 = Typography.subtitle1.copy(color = textColor),
+            subtitle2 = Typography.subtitle2.copy(color = textColor),
+            body1 = Typography.body1.copy(color = textColor),
+            body2 = Typography.body2.copy(color = textColor.copy(alpha = 0.7f)),
+        ),
         shapes = Shapes,
         content = content
     )
