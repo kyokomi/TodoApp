@@ -1,5 +1,6 @@
-package dev.kyokomi.todoapp
+package dev.kyokomi.todoapp.ui
 
+import android.content.Intent
 import android.text.format.DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,6 +54,8 @@ import java.time.OffsetDateTime
 
 @Composable
 fun MainActivityScreen(mainViewModel: MainViewModel) {
+    val context = LocalContext.current
+
     var selectedBottomNavigationItem by remember { mutableStateOf(0) }
     val bottomNavigationItems = listOf("Songs", "Artists", "Playlists")
 
@@ -81,14 +85,15 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
             FloatingActionButton(
                 shape = CircleShape,
                 onClick = {
-                    mainViewModel.addItem(
-                        TodoItem(
-                            id = OffsetDateTime.now().toEpochSecond(),
-                            title = "Add Test",
-                            thumbnailUrl = "https://avatars.githubusercontent.com/u/1456047",
-                            createdAt = OffsetDateTime.now(),
-                        )
-                    )
+//                    mainViewModel.addItem(
+//                        TodoItem(
+//                            id = OffsetDateTime.now().toEpochSecond(),
+//                            title = "Add Test",
+//                            thumbnailUrl = "https://avatars.githubusercontent.com/u/1456047",
+//                            createdAt = OffsetDateTime.now(),
+//                        )
+//                    )
+                    context.startActivity(Intent(context, TodoCreateActivity::class.java))
                 },
             ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = null)
@@ -154,9 +159,6 @@ fun PhotographerCard(
         Image(
             painter = rememberCoilPainter(
                 request = item.thumbnailUrl,
-//                requestBuilder = {
-//                    transformations(CircleCropTransformation())
-//                },
             ),
             contentDescription = null,
             modifier = Modifier.size(80.dp),

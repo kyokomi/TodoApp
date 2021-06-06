@@ -1,4 +1,4 @@
-package dev.kyokomi.todoapp
+package dev.kyokomi.todoapp.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
