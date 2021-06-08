@@ -85,14 +85,6 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
             FloatingActionButton(
                 shape = CircleShape,
                 onClick = {
-//                    mainViewModel.addItem(
-//                        TodoItem(
-//                            id = OffsetDateTime.now().toEpochSecond(),
-//                            title = "Add Test",
-//                            thumbnailUrl = "https://avatars.githubusercontent.com/u/1456047",
-//                            createdAt = OffsetDateTime.now(),
-//                        )
-//                    )
                     context.startActivity(Intent(context, TodoCreateActivity::class.java))
                 },
             ) {
