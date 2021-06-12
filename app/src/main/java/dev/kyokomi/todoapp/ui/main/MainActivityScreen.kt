@@ -1,4 +1,4 @@
-package dev.kyokomi.todoapp.ui
+package dev.kyokomi.todoapp.ui.main
 
 import android.content.Intent
 import android.text.format.DateUtils
@@ -35,8 +35,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,8 +49,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import dev.kyokomi.todoapp.model.TodoItem
+import dev.kyokomi.todoapp.ui.todo.TodoCreateActivity
 import kotlinx.coroutines.launch
-import java.time.OffsetDateTime
 
 @Composable
 fun MainActivityScreen(mainViewModel: MainViewModel) {
@@ -62,7 +62,7 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val items: List<TodoItem> by mainViewModel.todoItems.observeAsState(listOf())
+    val items: List<TodoItem> by mainViewModel.todoItems.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
@@ -183,34 +183,30 @@ fun PhotographerCard(
 @Preview
 @Composable
 fun PreviewTodoScreen() {
-    val viewModel = MainViewModel()
-    listOf(
+    val items = listOf(
         TodoItem(
             1,
             "Learn compose",
             "https://avatars.githubusercontent.com/u/1456047",
-            OffsetDateTime.now().minusDays(2),
         ),
         TodoItem(
             2,
             "Take the codelab",
             "https://avatars.githubusercontent.com/u/1456047",
-            OffsetDateTime.now().minusHours(3),
         ),
         TodoItem(
             3,
             "Apply state",
             "https://avatars.githubusercontent.com/u/1456047",
-            OffsetDateTime.now().minusMinutes(3),
         ),
         TodoItem(
             4,
             "Build dynamic UIs",
             "https://avatars.githubusercontent.com/u/1456047",
-            OffsetDateTime.now(),
         ),
-    ).forEach {
-        viewModel.addItem(it)
-    }
-    MainActivityScreen(viewModel)
+    )
+    MainScreen(
+        items = items,
+        onRemoveItem = {},
+    )
 }

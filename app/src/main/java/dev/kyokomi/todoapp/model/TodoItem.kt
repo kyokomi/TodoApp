@@ -7,13 +7,19 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.OffsetDateTime
 
+@Entity(tableName = "todo_item")
 data class TodoItem(
-    val id: Long,
-    val title: String,
-    val thumbnailUrl: String,
-    val createdAt: OffsetDateTime,
+    @PrimaryKey val id: Long,
+    @ColumnInfo(name = "title") val title: String,
+    @ColumnInfo(name = "thumbnail_url") val thumbnailUrl: String,
+    @ColumnInfo(name = "deleted") val deleted: Boolean = false,
+    @ColumnInfo(name = "created_at") val createdAt: OffsetDateTime = OffsetDateTime.now(),
+    @ColumnInfo(name = "updated_at") val updatedAt: OffsetDateTime = createdAt,
 )
 
 enum class TodoIcon(val imageVector: ImageVector, val contentDescription: String) {

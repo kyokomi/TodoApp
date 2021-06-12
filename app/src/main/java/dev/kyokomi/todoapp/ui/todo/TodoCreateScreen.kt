@@ -1,4 +1,4 @@
-package dev.kyokomi.todoapp.ui
+package dev.kyokomi.todoapp.ui.todo
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -55,7 +55,7 @@ import dev.kyokomi.todoapp.model.TodoItem
 import java.time.OffsetDateTime
 
 @Composable
-fun TodoCreateActivityScreen(todoCreateViewModel: TodoCreateViewModel) {
+fun TodoCreateActivityScreen(viewModel: TodoCreateViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,6 +74,9 @@ fun TodoCreateActivityScreen(todoCreateViewModel: TodoCreateViewModel) {
     ) { innerPadding ->
         TodoCreateScreen(
             modifier = Modifier.padding(innerPadding),
+            onItemComplete = {
+                viewModel.addItem(it)
+            }
         )
     }
 }
@@ -81,10 +84,11 @@ fun TodoCreateActivityScreen(todoCreateViewModel: TodoCreateViewModel) {
 @Composable
 fun TodoCreateScreen(
     modifier: Modifier = Modifier,
+    onItemComplete: (TodoItem) -> Unit,
 ) {
     Column {
         TodoItemInputBackground(elevate = true, modifier = Modifier.fillMaxWidth()) {
-            TodoItemInput {}
+            TodoItemInput(onItemComplete)
         }
     }
 }
@@ -236,11 +240,6 @@ fun TodoItemInputBackground(
 }
 
 @Composable
-fun TodoInputTextField(text: String, onTextChange: (String) -> Unit, modifier: Modifier) {
-    TodoInputText(text, onTextChange, modifier)
-}
-
-@Composable
 fun TodoEditButton(
     onClick: () -> Unit,
     text: String,
@@ -283,6 +282,5 @@ fun TodoInputText(
 @Preview
 @Composable
 fun PreviewTodoCreateScreen() {
-    val viewModel = TodoCreateViewModel()
-    TodoCreateActivityScreen(viewModel)
+    TodoCreateScreen {}
 }
