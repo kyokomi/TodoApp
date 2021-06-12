@@ -4,11 +4,11 @@ import dev.kyokomi.todoapp.data.dao.TodoItemDao
 import dev.kyokomi.todoapp.di.DispatcherDefault
 import dev.kyokomi.todoapp.di.DispatcherIO
 import dev.kyokomi.todoapp.model.TodoItem
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class TodoRepository @Inject constructor(

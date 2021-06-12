@@ -7,8 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.material.Surface
+import androidx.core.net.toUri
 import dagger.hilt.android.AndroidEntryPoint
+import dev.kyokomi.todoapp.common.FileUtil
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
+import java.io.File
+import java.io.FileInputStream
 
 @AndroidEntryPoint
 class TodoCreateActivity : ComponentActivity() {
@@ -22,8 +26,12 @@ class TodoCreateActivity : ComponentActivity() {
                 fileUri?.let {
                     // TODO: cropする?
 
-                    // TODO: この画像uriは次回起動時に使えない
-                    viewModel.selectImageContent(fileUri)
+                    val filename = FileUtil.getFilename(this, fileUri)
+                    val fileInputStream =
+                        contentResolver.openInputStream(fileUri) as FileInputStream
+                    val file = File(filesDir, filename)
+                    file.writeBytes(fileInputStream.readBytes())
+                    viewModel.selectImageContent(file.toUri())
                 }
             }
 

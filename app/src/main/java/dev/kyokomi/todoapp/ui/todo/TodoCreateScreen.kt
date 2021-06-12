@@ -88,12 +88,17 @@ fun TodoCreateScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Create Todo", modifier = Modifier.clickable {
-                    })
+                    Text(
+                        text = "Create Todo",
+                        modifier = Modifier.clickable {
+                        }
+                    )
                 },
                 actions = {
-                    IconButton(onClick = {
-                    }) {
+                    IconButton(
+                        onClick = {
+                        }
+                    ) {
                         Icon(Icons.Filled.Settings, contentDescription = null)
                     }
                 }
@@ -300,10 +305,12 @@ fun TodoInputText(
         colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
         maxLines = 1,
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = {
-            onImeAction()
-            keyboardController?.hide()
-        }),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onImeAction()
+                keyboardController?.hide()
+            }
+        ),
         modifier = modifier,
     )
 }

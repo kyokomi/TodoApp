@@ -7,8 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.kyokomi.todoapp.data.room.TodoAppDatabase
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
+import kotlinx.coroutines.Dispatchers
 
 @Module
 @InstallIn(SingletonComponent::class)

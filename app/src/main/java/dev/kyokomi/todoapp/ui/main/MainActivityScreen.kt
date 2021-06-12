@@ -68,14 +68,19 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "TodoApp", modifier = Modifier.clickable {
-                        coroutineScope.launch { scrollState.animateScrollToItem(0) }
-                    })
+                    Text(
+                        text = "TodoApp",
+                        modifier = Modifier.clickable {
+                            coroutineScope.launch { scrollState.animateScrollToItem(0) }
+                        }
+                    )
                 },
                 actions = {
-                    IconButton(onClick = {
-                        coroutineScope.launch { scrollState.animateScrollToItem(99) }
-                    }) {
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch { scrollState.animateScrollToItem(99) }
+                        }
+                    ) {
                         Icon(Icons.Filled.Settings, contentDescription = null)
                     }
                 }
