@@ -1,5 +1,6 @@
 package dev.kyokomi.todoapp.ui.todo
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -9,6 +10,7 @@ import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,8 +37,10 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,16 +50,40 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
 import dev.kyokomi.todoapp.model.TodoIcon
-import dev.kyokomi.todoapp.model.TodoItem
-import java.time.OffsetDateTime
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun TodoCreateActivityScreen(viewModel: TodoCreateViewModel) {
+fun TodoCreateActivityScreen(
+    viewModel: TodoCreateViewModel,
+    onOpenImageContent: () -> Unit,
+    onItemComplete: () -> Unit,
+) {
+    TodoCreateScreen(
+        imageContentState = viewModel.imageContent,
+        onItemComplete = {
+            viewModel.addItem(it)
+            onItemComplete()
+        },
+        onOpenImageContent = onOpenImageContent,
+    )
+}
+
+@Composable
+fun TodoCreateScreen(
+    imageContentState: StateFlow<Uri?>,
+    onItemComplete: (String) -> Unit,
+    onOpenImageContent: () -> Unit,
+) {
+    val imageContent by imageContentState.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -72,41 +100,42 @@ fun TodoCreateActivityScreen(viewModel: TodoCreateViewModel) {
             )
         },
     ) { innerPadding ->
-        TodoCreateScreen(
-            modifier = Modifier.padding(innerPadding),
-            onItemComplete = {
-                viewModel.addItem(it)
+        Column(modifier = Modifier.padding(innerPadding)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .clickable {
+                        onOpenImageContent()
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                if (imageContent != null) {
+                    Image(
+                        painter = rememberCoilPainter(
+                            request = imageContent,
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                    )
+                } else {
+                    Icon(Icons.Filled.Add, contentDescription = null)
+                }
             }
-        )
-    }
-}
-
-@Composable
-fun TodoCreateScreen(
-    modifier: Modifier = Modifier,
-    onItemComplete: (TodoItem) -> Unit,
-) {
-    Column {
-        TodoItemInputBackground(elevate = true, modifier = Modifier.fillMaxWidth()) {
-            TodoItemInput(onItemComplete)
+            TodoItemInputBackground(elevate = true, modifier = Modifier.fillMaxWidth()) {
+                TodoItemInput(onItemComplete)
+            }
         }
     }
 }
 
 @Composable
-fun TodoItemInput(onItemComplete: (TodoItem) -> Unit) {
+fun TodoItemInput(onItemComplete: (String) -> Unit) {
     val (text, setText) = remember { mutableStateOf("") }
     val (icon, setIcon) = remember { mutableStateOf(TodoIcon.Default) }
     val iconsVisible = text.isNotBlank()
     val submit = {
-        onItemComplete(
-            TodoItem(
-                id = OffsetDateTime.now().toEpochSecond(),
-                title = text,
-                thumbnailUrl = "https://avatars.githubusercontent.com/u/1456047",
-                createdAt = OffsetDateTime.now(),
-            )
-        )
+        onItemComplete(text)
         setIcon(TodoIcon.Default)
         setText("") // clear the internal text
     }
@@ -234,7 +263,7 @@ fun TodoItemInputBackground(
     ) {
         Row(
             modifier = modifier.animateContentSize(animationSpec = TweenSpec(300)),
-            content = content
+            content = content,
         )
     }
 }
@@ -282,5 +311,10 @@ fun TodoInputText(
 @Preview
 @Composable
 fun PreviewTodoCreateScreen() {
-    TodoCreateScreen {}
+    val imageContentStateFlow = MutableStateFlow<Uri?>(null)
+    TodoCreateScreen(
+        imageContentState = imageContentStateFlow,
+        onItemComplete = {},
+        onOpenImageContent = {},
+    )
 }
