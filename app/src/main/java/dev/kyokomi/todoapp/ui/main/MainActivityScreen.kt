@@ -1,142 +1,128 @@
 package dev.kyokomi.todoapp.ui.main
 
-import android.content.Intent
 import android.text.format.DateUtils
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import dev.kyokomi.todoapp.model.TodoItem
+import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 import dev.kyokomi.todoapp.ui.todo.TodoCreateActivity
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun MainActivityScreen(mainViewModel: MainViewModel) {
-    val context = LocalContext.current
-
-    var selectedBottomNavigationItem by remember { mutableStateOf(0) }
-    val bottomNavigationItems = listOf("Songs", "Artists", "Playlists")
-
-    val scrollState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
     val items: List<TodoItem> by mainViewModel.todoItems.collectAsState(initial = emptyList())
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "TodoApp",
-                        modifier = Modifier.clickable {
-                            coroutineScope.launch { scrollState.animateScrollToItem(0) }
-                        }
-                    )
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            coroutineScope.launch { scrollState.animateScrollToItem(99) }
-                        }
-                    ) {
-                        Icon(Icons.Filled.Settings, contentDescription = null)
-                    }
-                }
-            )
+    MainScreen(
+        items = items,
+        onRemoveItem = {
+            //mainViewModel.removeItem(it)
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                shape = CircleShape,
-                onClick = {
-                    context.startActivity(Intent(context, TodoCreateActivity::class.java))
-                },
-            ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = null)
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End,
-        bottomBar = {
-            BottomNavigation {
-                bottomNavigationItems.forEachIndexed { index, item ->
-                    BottomNavigationItem(
-                        icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
-                        label = { Text(item) },
-                        selected = selectedBottomNavigationItem == index,
-                        onClick = { selectedBottomNavigationItem = index }
-                    )
-                }
-            }
-        },
-    ) { innerPadding ->
-        MainScreen(
-            items = items,
-            onRemoveItem = { mainViewModel.removeItem(it) },
-            modifier = Modifier.padding(innerPadding),
-        )
-    }
+    )
 }
 
 @Composable
 fun MainScreen(
     items: List<TodoItem>,
     onRemoveItem: (TodoItem) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
-    LazyColumn(
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier,
-    ) {
-        items(items = items) { item ->
-            PhotographerCard(
-                item = item,
-                onClickItem = onRemoveItem,
-                modifier = Modifier.fillMaxWidth(),
-            )
+    val context = LocalContext.current
+    val scrollState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    var isItemLoading by remember { mutableStateOf(false) }
+
+    suspend fun loadItem() {
+        if (!isItemLoading) {
+            isItemLoading = true
+            delay(3000L)
+            isItemLoading = false
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        loadItem()
+    }
+
+    TodoAppScaffold(
+        title = "TodoApp",
+        onClickTitle = {
+            coroutineScope.launch { scrollState.animateScrollToItem(0) }
+        },
+        actions = {
+            IconButton(
+                onClick = {
+                    TodoCreateActivity.start(context)
+                },
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = null)
+            }
+        },
+    ) { innerPadding ->
+        LazyColumn(
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(innerPadding),
+        ) {
+            items(items = items) { item ->
+                if (isItemLoading) {
+                    LoadingRow()
+                } else {
+                    PhotographerCard(
+                        item = item,
+                        onClickItem = onRemoveItem,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
         }
     }
 }
@@ -148,23 +134,27 @@ fun PhotographerCard(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier
+        modifier = modifier
             .clip(RoundedCornerShape(4.dp))
             .background(MaterialTheme.colors.surface)
-            .clickable { onClickItem(item) }
+            .clickable { onClickItem(item) },
     ) {
         Image(
             painter = rememberCoilPainter(
                 request = item.thumbnailUrl,
             ),
             contentDescription = null,
-            modifier = Modifier.size(80.dp),
-        )
-        Column(
             modifier = Modifier
-                .padding(start = 8.dp)
+                .size(64.dp),
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(
+            modifier = Modifier,
         ) {
-            Text(text = item.title, fontWeight = FontWeight.Bold)
+            Text(
+                text = item.title,
+                fontWeight = FontWeight.Bold,
+            )
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     // https://developer.android.com/reference/android/text/format/DateUtils.html#getRelativeTimeSpanString
@@ -182,6 +172,46 @@ fun PhotographerCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun LoadingRow() {
+    // Creates an `InfiniteTransition` that runs infinite child animation values.
+    val infiniteTransition = rememberInfiniteTransition()
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        // `infiniteRepeatable` repeats the specified duration-based `AnimationSpec` infinitely.
+        animationSpec = infiniteRepeatable(
+            // The `keyframes` animates the value by specifying multiple timestamps.
+            animation = keyframes {
+                // One iteration is 1000 milliseconds.
+                durationMillis = 1000
+                // 0.7f at the middle of an iteration.
+                0.7f at 500
+            },
+            // When the value finishes animating from 0f to 1f, it repeats by reversing the
+            // animation direction.
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    Row(
+        modifier = Modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .background(Color.LightGray.copy(alpha = alpha)),
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(32.dp)
+                .background(Color.LightGray.copy(alpha = alpha)),
+        )
     }
 }
 
@@ -211,11 +241,9 @@ fun PreviewTodoScreen() {
         ),
     )
     TodoAppTheme {
-        Surface {
-            MainScreen(
-                items = items,
-                onRemoveItem = {},
-            )
-        }
+        MainScreen(
+            items = items,
+            onRemoveItem = {},
+        )
     }
 }

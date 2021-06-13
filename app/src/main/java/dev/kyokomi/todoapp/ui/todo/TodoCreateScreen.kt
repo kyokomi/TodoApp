@@ -42,6 +42,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
@@ -72,6 +73,7 @@ fun TodoCreateActivityScreen(
     viewModel: TodoCreateViewModel,
     onOpenImageContent: () -> Unit,
     onItemComplete: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     TodoCreateScreen(
         imageContentState = viewModel.imageContent,
@@ -80,6 +82,7 @@ fun TodoCreateActivityScreen(
             onItemComplete()
         },
         onOpenImageContent = onOpenImageContent,
+        onBackPressed = onBackPressed,
     )
 }
 
@@ -88,6 +91,7 @@ fun TodoCreateScreen(
     imageContentState: StateFlow<Uri?>,
     onItemComplete: (String) -> Unit,
     onOpenImageContent: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     val imageContent by imageContentState.collectAsState()
     var systemMessageShown by remember { mutableStateOf(false) }
@@ -95,18 +99,22 @@ fun TodoCreateScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
+                },
                 title = {
                     Text(
                         text = "Create Todo",
-                        modifier = Modifier.clickable {
-                        },
                     )
                 },
                 actions = {
                     IconButton(
-                        onClick = {
-                            systemMessageShown = true
-                        }
+                        onClick = { systemMessageShown = true },
                     ) {
                         Icon(Icons.Filled.Settings, contentDescription = null)
                     }
@@ -368,13 +376,12 @@ fun PreviewTodoCreateScreen() {
     val imageContentStateFlow = MutableStateFlow<Uri?>(null)
 
     TodoAppTheme {
-        Surface {
-            TodoCreateScreen(
-                imageContentState = imageContentStateFlow,
-                onItemComplete = {},
-                onOpenImageContent = {},
-            )
-        }
+        TodoCreateScreen(
+            imageContentState = imageContentStateFlow,
+            onItemComplete = {},
+            onOpenImageContent = {},
+            onBackPressed = {},
+        )
     }
 }
 
@@ -384,12 +391,11 @@ fun PreviewDarkTodoCreateScreen() {
     val imageContentStateFlow = MutableStateFlow<Uri?>(null)
 
     TodoAppTheme(darkTheme = true) {
-        Surface {
-            TodoCreateScreen(
-                imageContentState = imageContentStateFlow,
-                onItemComplete = {},
-                onOpenImageContent = {},
-            )
-        }
+        TodoCreateScreen(
+            imageContentState = imageContentStateFlow,
+            onItemComplete = {},
+            onOpenImageContent = {},
+            onBackPressed = {},
+        )
     }
 }

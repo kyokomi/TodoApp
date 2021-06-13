@@ -1,5 +1,7 @@
 package dev.kyokomi.todoapp.ui.todo
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,12 +12,19 @@ import androidx.compose.material.Surface
 import androidx.core.net.toUri
 import dagger.hilt.android.AndroidEntryPoint
 import dev.kyokomi.todoapp.common.FileUtil
+import dev.kyokomi.todoapp.ui.extension.finishIfNoTaskStartDefault
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 import java.io.File
 import java.io.FileInputStream
 
 @AndroidEntryPoint
 class TodoCreateActivity : ComponentActivity() {
+    companion object {
+        fun start(context: Context) {
+            context.startActivity(Intent(context, TodoCreateActivity::class.java))
+        }
+    }
+
     private val viewModel by viewModels<TodoCreateViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,17 +46,18 @@ class TodoCreateActivity : ComponentActivity() {
 
         setContent {
             TodoAppTheme {
-                Surface {
-                    TodoCreateActivityScreen(
-                        viewModel = viewModel,
-                        onOpenImageContent = {
-                            launcher.launch("image/*")
-                        },
-                        onItemComplete = {
-                            finish()
-                        },
-                    )
-                }
+                TodoCreateActivityScreen(
+                    viewModel = viewModel,
+                    onOpenImageContent = {
+                        launcher.launch("image/*")
+                    },
+                    onItemComplete = {
+                        finish()
+                    },
+                    onBackPressed = {
+                        finishIfNoTaskStartDefault()
+                    },
+                )
             }
         }
     }
