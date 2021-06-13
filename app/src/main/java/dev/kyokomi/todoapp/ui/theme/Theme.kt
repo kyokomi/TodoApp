@@ -8,48 +8,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = Red300,
+    primaryVariant = Red700,
+    onPrimary = Color.Black,
+    secondary = Red300,
+    onSecondary = Color.Black,
+    error = Red200,
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
+    primary = Red700,
+    primaryVariant = Red900,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    secondary = Red700,
+    secondaryVariant = Red900,
+    onSecondary = Color.White,
+    error = Red800,
 )
 
 @Composable
 fun TodoAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
-    val textColor = if (darkTheme) {
-        Color.White
-    } else {
-        Color.Unspecified
-    }
-
     MaterialTheme(
-        colors = colors,
-        typography = Typography.copy(
-            subtitle1 = Typography.subtitle1.copy(color = textColor),
-            subtitle2 = Typography.subtitle2.copy(color = textColor),
-            body1 = Typography.body1.copy(color = textColor),
-            body2 = Typography.body2.copy(color = textColor.copy(alpha = 0.7f)),
-        ),
+        colors = if (darkTheme) DarkColorPalette else LightColorPalette,
+        typography = Typography,
         shapes = Shapes,
         content = content
     )

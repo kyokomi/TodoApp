@@ -27,6 +27,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -49,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import dev.kyokomi.todoapp.model.TodoItem
+import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 import dev.kyokomi.todoapp.ui.todo.TodoCreateActivity
 import kotlinx.coroutines.launch
 
@@ -113,7 +115,6 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
         MainScreen(
             items = items,
             onRemoveItem = { mainViewModel.removeItem(it) },
-//            state = scrollState,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -126,7 +127,6 @@ fun MainScreen(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-//        state = state,
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier,
@@ -210,8 +210,12 @@ fun PreviewTodoScreen() {
             "https://avatars.githubusercontent.com/u/1456047",
         ),
     )
-    MainScreen(
-        items = items,
-        onRemoveItem = {},
-    )
+    TodoAppTheme {
+        Surface {
+            MainScreen(
+                items = items,
+                onRemoveItem = {},
+            )
+        }
+    }
 }
