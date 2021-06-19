@@ -49,12 +49,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.rememberCoilPainter
 import dev.kyokomi.todoapp.model.TodoItem
 import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
+import dev.kyokomi.todoapp.ui.license.LicenseActivity
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 import dev.kyokomi.todoapp.ui.todo.TodoCreateActivity
 import kotlinx.coroutines.delay
@@ -81,8 +79,6 @@ fun MainScreen(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val navController = rememberNavController()
-
     TodoAppScaffold(
         title = "TodoApp",
         onClickTitle = {
@@ -97,25 +93,15 @@ fun MainScreen(
                 Icon(Icons.Filled.Add, contentDescription = null)
             }
         },
-        navController = navController,
+        onClickBottomNavigationItem = {
+            LicenseActivity.start(context)
+        },
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "home",
+        HomeScreen(
+            items = items,
+            onRemoveItem = onRemoveItem,
             modifier = Modifier.padding(innerPadding),
-        ) {
-            composable("home") {
-                Column {
-                    Text("test")
-                    HomeScreen(
-                        items = items,
-                        onRemoveItem = onRemoveItem,
-                    )
-                }
-            }
-            composable("sub") { SubScreen() }
-            composable("account") { AccountScreen() }
-        }
+        )
     }
 }
 

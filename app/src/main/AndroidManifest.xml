@@ -13,6 +13,10 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.TodoApp">
     <activity
+      android:name=".ui.license.LicenseActivity"
+      android:exported="true"
+      android:theme="@style/Theme.TodoApp.NoActionBar" />
+    <activity
       android:name=".ui.todo.TodoCreateActivity"
       android:theme="@style/Theme.TodoApp.NoActionBar" />
     <activity

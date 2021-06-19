@@ -17,14 +17,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 
 @Composable
 fun TodoAppScaffold(
     title: String,
     onClickTitle: () -> Unit = {},
+    onClickBottomNavigationItem: (item: String) -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    navController: NavHostController,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     var selectedBottomNavigationItem by remember { mutableStateOf(0) }
@@ -53,7 +52,7 @@ fun TodoAppScaffold(
                         selected = selectedBottomNavigationItem == index,
                         onClick = {
                             selectedBottomNavigationItem = index
-                            navController.navigate(item)
+                            onClickBottomNavigationItem(item)
                         }
                     )
                 }
