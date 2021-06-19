@@ -49,6 +49,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.rememberCoilPainter
 import dev.kyokomi.todoapp.model.TodoItem
 import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
@@ -78,19 +81,7 @@ fun MainScreen(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    var isItemLoading by remember { mutableStateOf(false) }
-
-    suspend fun loadItem() {
-        if (!isItemLoading) {
-            isItemLoading = true
-            delay(3000L)
-            isItemLoading = false
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        loadItem()
-    }
+    val navController = rememberNavController()
 
     TodoAppScaffold(
         title = "TodoApp",
@@ -106,25 +97,75 @@ fun MainScreen(
                 Icon(Icons.Filled.Add, contentDescription = null)
             }
         },
+        navController = navController,
     ) { innerPadding ->
-        LazyColumn(
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        NavHost(
+            navController = navController,
+            startDestination = "home",
             modifier = Modifier.padding(innerPadding),
         ) {
-            items(items = items) { item ->
-                if (isItemLoading) {
-                    LoadingRow()
-                } else {
-                    PhotographerCard(
-                        item = item,
-                        onClickItem = onRemoveItem,
-                        modifier = Modifier.fillMaxWidth(),
+            composable("home") {
+                Column {
+                    Text("test")
+                    HomeScreen(
+                        items = items,
+                        onRemoveItem = onRemoveItem,
                     )
                 }
             }
+            composable("sub") { SubScreen() }
+            composable("account") { AccountScreen() }
         }
     }
+}
+
+@Composable
+fun HomeScreen(
+    items: List<TodoItem>,
+    onRemoveItem: (TodoItem) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var isItemLoading by remember { mutableStateOf(false) }
+
+    suspend fun loadItem() {
+        if (!isItemLoading) {
+            isItemLoading = true
+            delay(3000L)
+            isItemLoading = false
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        loadItem()
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier,
+    ) {
+        items(items = items) { item ->
+            if (isItemLoading) {
+                LoadingRow()
+            } else {
+                PhotographerCard(
+                    item = item,
+                    onClickItem = onRemoveItem,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SubScreen() {
+    Text("sub")
+}
+
+@Composable
+fun AccountScreen() {
+    Text("account")
 }
 
 @Composable
@@ -241,7 +282,7 @@ fun PreviewTodoScreen() {
         ),
     )
     TodoAppTheme {
-        MainScreen(
+        HomeScreen(
             items = items,
             onRemoveItem = {},
         )
