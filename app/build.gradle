@@ -90,6 +90,7 @@ dependencies {
     // For local unit tests
     testImplementation "com.google.dagger:hilt-android-testing:$dagger_version"
     kaptTest "com.google.dagger:hilt-compiler:$dagger_version"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

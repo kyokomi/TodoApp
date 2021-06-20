@@ -8,23 +8,29 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavBackStackEntry
+
+data class BottomItem(
+    val name: String,
+    val icon: ImageVector,
+    val content: @Composable (NavBackStackEntry) -> Unit,
+)
 
 @Composable
 fun TodoAppScaffold(
     title: String,
-    onClickBottomNavigationItem: (item: String) -> Unit = {},
+    bottomNavigationItems: List<BottomItem> = listOf(),
+    onClickBottomNavigationItem: (item: BottomItem) -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     var selectedBottomNavigationItem by remember { mutableStateOf(0) }
-    val bottomNavigationItems = listOf("home", "sub", "account")
 
     Scaffold(
         topBar = {
@@ -34,17 +40,19 @@ fun TodoAppScaffold(
             )
         },
         bottomBar = {
-            BottomNavigation {
-                bottomNavigationItems.forEachIndexed { index, item ->
-                    BottomNavigationItem(
-                        icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
-                        label = { Text(item) },
-                        selected = selectedBottomNavigationItem == index,
-                        onClick = {
-                            selectedBottomNavigationItem = index
-                            onClickBottomNavigationItem(item)
-                        }
-                    )
+            if (bottomNavigationItems.isNotEmpty()) {
+                BottomNavigation {
+                    bottomNavigationItems.forEachIndexed { index, item ->
+                        BottomNavigationItem(
+                            icon = { Icon(item.icon, contentDescription = null) },
+                            label = { Text(item.name) },
+                            selected = selectedBottomNavigationItem == index,
+                            onClick = {
+                                selectedBottomNavigationItem = index
+                                onClickBottomNavigationItem(item)
+                            }
+                        )
+                    }
                 }
             }
         },

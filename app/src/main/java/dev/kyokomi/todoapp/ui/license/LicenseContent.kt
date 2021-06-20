@@ -40,6 +40,6 @@ private fun LicenseWebView(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewLicenseScreen() {
     TodoAppTheme {
-        //LicenseScreen()
+        // LicenseScreen()
     }
 }

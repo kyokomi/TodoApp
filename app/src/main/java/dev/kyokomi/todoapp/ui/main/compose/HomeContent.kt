@@ -157,7 +157,7 @@ fun PreviewHomeScreen() {
         ),
     )
     TodoAppTheme {
-        TodoAppScaffold("home") {
+        TodoAppScaffold(title = "Home") {
             HomeScreen(
                 items = items,
                 onRemoveItem = {},

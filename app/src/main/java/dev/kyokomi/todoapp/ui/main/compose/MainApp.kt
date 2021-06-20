@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,18 +27,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.kyokomi.todoapp.ui.compose.BottomItem
 import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
-import dev.kyokomi.todoapp.ui.license.LicenseActivity
 import dev.kyokomi.todoapp.ui.main.MainViewModel
 import dev.kyokomi.todoapp.ui.todo.TodoCreateActivity
 
 @Composable
-fun MainApp(mainViewModel: MainViewModel) {
+fun MainApp() {
     val context = LocalContext.current
     val navController = rememberNavController()
+    val bottomItems = listOf(
+        BottomItem(
+            name = "Home",
+            icon = Icons.Filled.Home,
+            content = {
+                val viewModel = hiltViewModel<MainViewModel>()
+                HomeContent(viewModel)
+            },
+        ),
+        BottomItem(
+            name = "Account",
+            icon = Icons.Filled.AccountBox,
+            content = {
+                AccountContent()
+            },
+        ),
+    )
 
     TodoAppScaffold(
         title = "TodoApp",
@@ -49,21 +69,17 @@ fun MainApp(mainViewModel: MainViewModel) {
                 Icon(Icons.Filled.Add, contentDescription = null)
             }
         },
-        onClickBottomNavigationItem = {
-            LicenseActivity.start(context)
+        onClickBottomNavigationItem = { navItem ->
+            navController.navigate(route = navItem.name)
         },
+        bottomNavigationItems = bottomItems,
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = "Home",
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable("home") {
-                HomeContent(mainViewModel)
-            }
-            composable("account") {
-                AccountContent(mainViewModel)
-            }
+            bottomItems.forEach { composable(route = it.name, content = it.content) }
         }
     }
 }
