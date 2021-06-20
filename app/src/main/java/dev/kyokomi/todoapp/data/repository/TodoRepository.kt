@@ -8,6 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 @Singleton
@@ -16,7 +17,7 @@ class TodoRepository @Inject constructor(
     @DispatcherIO private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     @DispatcherDefault private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
-    fun resolveAll() = todoItemDao.selectAll()
+    fun resolveAll(): Flow<List<TodoItem>> = todoItemDao.selectAll()
 
     suspend fun addTodoItem(todoItem: TodoItem) = withContext(ioDispatcher) {
         todoItemDao.insert(todoItem)

@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import dev.kyokomi.todoapp.ui.main.compose.MainApp
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 
 @AndroidEntryPoint
@@ -21,10 +22,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         setContent {
             TodoAppTheme {
-                MainActivityScreen(mainViewModel)
+                MainApp(mainViewModel)
             }
         }
     }

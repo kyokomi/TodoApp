@@ -1,6 +1,5 @@
 package dev.kyokomi.todoapp.ui.compose
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
@@ -16,12 +15,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 
 @Composable
 fun TodoAppScaffold(
     title: String,
-    onClickTitle: () -> Unit = {},
     onClickBottomNavigationItem: (item: String) -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
@@ -32,14 +29,7 @@ fun TodoAppScaffold(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = title,
-                        modifier = Modifier.clickable {
-                            onClickTitle()
-                        }
-                    )
-                },
+                title = { Text(text = title) },
                 actions = actions,
             )
         },

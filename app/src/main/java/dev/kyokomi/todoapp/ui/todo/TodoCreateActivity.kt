@@ -8,7 +8,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.material.Surface
 import androidx.core.net.toUri
 import dagger.hilt.android.AndroidEntryPoint
 import dev.kyokomi.todoapp.common.FileUtil

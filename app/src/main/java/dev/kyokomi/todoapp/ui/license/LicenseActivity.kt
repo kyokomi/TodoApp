@@ -52,6 +52,6 @@ private fun LicenseScreen() {
 @Composable
 fun DefaultPreview() {
     TodoAppTheme {
-        //LicenseScreen()
+        // LicenseScreen()
     }
 }
