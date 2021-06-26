@@ -1,4 +1,4 @@
-package dev.kyokomi.todoapp.ui.todo
+package dev.kyokomi.todoapp.ui.todo.create
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel

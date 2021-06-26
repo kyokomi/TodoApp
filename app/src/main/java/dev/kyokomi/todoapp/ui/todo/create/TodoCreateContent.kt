@@ -1,4 +1,4 @@
-package dev.kyokomi.todoapp.ui.todo
+package dev.kyokomi.todoapp.ui.todo.create
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
@@ -69,7 +69,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun TodoCreateActivityScreen(
+fun TodoCreateContent(
     viewModel: TodoCreateViewModel,
     onOpenImageContent: () -> Unit,
     onItemComplete: () -> Unit,
@@ -96,6 +96,7 @@ fun TodoCreateScreen(
     val imageContent by imageContentState.collectAsState()
     var systemMessageShown by remember { mutableStateOf(false) }
 
+    // TODO: TodoAppScaffoldにする
     Scaffold(
         topBar = {
             TopAppBar(

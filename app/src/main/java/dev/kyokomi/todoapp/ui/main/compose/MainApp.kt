@@ -35,7 +35,7 @@ import dev.kyokomi.todoapp.ui.compose.BottomItem
 import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
 import dev.kyokomi.todoapp.ui.main.AccountViewModel
 import dev.kyokomi.todoapp.ui.main.MainViewModel
-import dev.kyokomi.todoapp.ui.todo.TodoCreateActivity
+import dev.kyokomi.todoapp.ui.todo.create.TodoCreateActivity
 
 @Composable
 fun MainApp() {

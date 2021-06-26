@@ -28,6 +28,7 @@ fun TodoAppScaffold(
     title: String,
     bottomNavigationItems: List<BottomItem> = listOf(),
     onClickBottomNavigationItem: (item: BottomItem) -> Unit = {},
+    navigationIcon: @Composable (() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     var selectedBottomNavigationItem by remember { mutableStateOf(0) }
@@ -36,6 +37,7 @@ fun TodoAppScaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = title) },
+                navigationIcon = navigationIcon,
                 actions = if (bottomNavigationItems.isNotEmpty()) {
                     bottomNavigationItems[selectedBottomNavigationItem].actions
                 } else {

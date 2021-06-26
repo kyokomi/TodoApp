@@ -17,6 +17,7 @@ class TodoRepository @Inject constructor(
     @DispatcherIO private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     @DispatcherDefault private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
+    fun resolve(id: Long): Flow<TodoItemEntity> = todoItemDao.selectById(id)
     fun resolveAll(): Flow<List<TodoItemEntity>> = todoItemDao.selectAll()
 
     suspend fun addTodoItem(todoItem: TodoItemEntity) = withContext(ioDispatcher) {

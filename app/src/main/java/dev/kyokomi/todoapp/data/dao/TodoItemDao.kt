@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class TodoItemDao {
+    @Query("SELECT * FROM todo_item WHERE id = :id LIMIT 1")
+    abstract fun selectById(id: Long): Flow<TodoItemEntity>
+
     @Query("SELECT * FROM todo_item ORDER BY created_at DESC")
     abstract fun selectAll(): Flow<List<TodoItemEntity>>
 

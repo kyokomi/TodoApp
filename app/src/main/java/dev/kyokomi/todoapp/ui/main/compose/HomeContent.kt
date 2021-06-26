@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,21 +36,25 @@ import dev.kyokomi.todoapp.model.TodoItemEntity
 import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
 import dev.kyokomi.todoapp.ui.main.MainViewModel
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
+import dev.kyokomi.todoapp.ui.todo.detail.TodoDetailActivity
 import kotlinx.coroutines.delay
 
 @Composable
 fun HomeContent(mainViewModel: MainViewModel) {
+    val context = LocalContext.current
     val items by mainViewModel.todoItems.collectAsState(listOf())
     HomeScreen(
         items = items,
-        onRemoveItem = {},
+        onClickItem = {
+            TodoDetailActivity.start(context = context, it.id)
+        },
     )
 }
 
 @Composable
 fun HomeScreen(
     items: List<TodoItemEntity>,
-    onRemoveItem: (TodoItemEntity) -> Unit,
+    onClickItem: (TodoItemEntity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isItemLoading by remember { mutableStateOf(false) }
@@ -72,7 +77,7 @@ fun HomeScreen(
         items(items = items) { item ->
             PhotographerCard(
                 item = item,
-                onClickItem = onRemoveItem,
+                onClickItem = onClickItem,
                 modifier = Modifier.fillMaxWidth(),
             )
             Divider(modifier = Modifier.height(1.dp))
@@ -158,7 +163,7 @@ fun PreviewHomeScreen() {
         TodoAppScaffold(title = "Home") {
             HomeScreen(
                 items = items,
-                onRemoveItem = {},
+                onClickItem = {},
             )
         }
     }

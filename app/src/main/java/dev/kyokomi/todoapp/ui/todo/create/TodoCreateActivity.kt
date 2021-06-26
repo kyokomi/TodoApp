@@ -1,4 +1,4 @@
-package dev.kyokomi.todoapp.ui.todo
+package dev.kyokomi.todoapp.ui.todo.create
 
 import android.content.Context
 import android.content.Intent
@@ -49,7 +49,7 @@ class TodoCreateActivity : ComponentActivity() {
         setContent {
             val accountSettingEntity by viewModel.accountSetting.collectAsState(initial = AccountSettingEntity())
             TodoAppTheme(accountSetting = accountSettingEntity) {
-                TodoCreateActivityScreen(
+                TodoCreateContent(
                     viewModel = viewModel,
                     onOpenImageContent = {
                         launcher.launch("image/*")
