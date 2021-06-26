@@ -19,8 +19,8 @@ import androidx.navigation.NavBackStackEntry
 data class BottomItem(
     val name: String,
     val icon: ImageVector,
-    val content: @Composable (NavBackStackEntry) -> Unit,
     val actions: @Composable (RowScope.() -> Unit) = {},
+    val content: @Composable (NavBackStackEntry) -> Unit,
 )
 
 @Composable

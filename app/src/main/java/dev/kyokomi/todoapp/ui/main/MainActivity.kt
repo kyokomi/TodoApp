@@ -6,7 +6,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
+import dev.kyokomi.todoapp.model.AccountSettingEntity
 import dev.kyokomi.todoapp.ui.main.compose.MainApp
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 
@@ -24,7 +27,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            TodoAppTheme {
+            val accountSettingEntity by viewModel.accountSetting.collectAsState(initial = AccountSettingEntity())
+            TodoAppTheme(accountSetting = accountSettingEntity) {
                 MainApp()
             }
         }

@@ -4,13 +4,12 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.kyokomi.todoapp.model.AccountSettingEntity
-import dev.kyokomi.todoapp.ui.main.MainViewModel
 
 private val DarkColorPalette = darkColors(
     primary = Red300,
@@ -33,14 +32,28 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun TodoAppTheme(
-    mainViewModel: MainViewModel = viewModel(),
+    accountSetting: AccountSettingEntity = AccountSettingEntity(),
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val accountSetting by mainViewModel.accountSetting.collectAsState(initial = AccountSettingEntity())
+    val isDark = darkTheme && accountSetting.darkMode
+    val systemUiController = rememberSystemUiController()
+    val colors = if (isDark) DarkColorPalette else LightColorPalette
+    val useDarkIcons = colors.isLight
+
+    SideEffect {
+        // Update all of the system bar colors to be transparent, and use
+        // dark icons if we're in light theme
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = useDarkIcons
+        )
+        systemUiController.setStatusBarColor(colors.primarySurface)
+        systemUiController.setNavigationBarColor(colors.primarySurface)
+    }
 
     MaterialTheme(
-        colors = if (darkTheme && accountSetting.darkMode) DarkColorPalette else LightColorPalette,
+        colors = colors,
         typography = Typography,
         shapes = Shapes,
         content = content

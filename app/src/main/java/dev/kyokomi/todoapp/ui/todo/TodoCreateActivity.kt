@@ -8,9 +8,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.net.toUri
 import dagger.hilt.android.AndroidEntryPoint
 import dev.kyokomi.todoapp.common.FileUtil
+import dev.kyokomi.todoapp.model.AccountSettingEntity
 import dev.kyokomi.todoapp.ui.extension.finishIfNoTaskStartDefault
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 import java.io.File
@@ -44,7 +47,8 @@ class TodoCreateActivity : ComponentActivity() {
             }
 
         setContent {
-            TodoAppTheme {
+            val accountSettingEntity by viewModel.accountSetting.collectAsState(initial = AccountSettingEntity())
+            TodoAppTheme(accountSetting = accountSettingEntity) {
                 TodoCreateActivityScreen(
                     viewModel = viewModel,
                     onOpenImageContent = {

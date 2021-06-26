@@ -13,7 +13,6 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,16 +30,19 @@ import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 @Composable
 fun AccountContent(viewModel: AccountViewModel) {
     val context = LocalContext.current
-    val accountSetting by viewModel.accountSetting.collectAsState(initial = AccountSettingEntity())
-    AccountScreen(
-        onClickLicense = {
-            LicenseActivity.start(context)
-        },
-        accountSetting = accountSetting,
-        setAccountSetting = {
-            viewModel.editAccountSetting(it)
-        },
-    )
+    val accountSettingState = viewModel.accountSetting.collectAsState(initial = null)
+
+    accountSettingState.value?.let { accountSetting ->
+        AccountScreen(
+            onClickLicense = {
+                LicenseActivity.start(context)
+            },
+            accountSetting = accountSetting,
+            setAccountSetting = {
+                viewModel.editAccountSetting(it)
+            },
+        )
+    }
 }
 
 @Composable
