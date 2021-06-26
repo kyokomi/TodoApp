@@ -48,6 +48,15 @@ fun MainApp() {
                 val viewModel = hiltViewModel<MainViewModel>()
                 HomeContent(viewModel)
             },
+            actions = {
+                IconButton(
+                    onClick = {
+                        TodoCreateActivity.start(context)
+                    },
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = null)
+                }
+            },
         ),
         BottomItem(
             name = "Account",
@@ -60,15 +69,6 @@ fun MainApp() {
 
     TodoAppScaffold(
         title = "TodoApp",
-        actions = {
-            IconButton(
-                onClick = {
-                    TodoCreateActivity.start(context)
-                },
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = null)
-            }
-        },
         onClickBottomNavigationItem = { navItem ->
             navController.navigate(route = navItem.name)
         },

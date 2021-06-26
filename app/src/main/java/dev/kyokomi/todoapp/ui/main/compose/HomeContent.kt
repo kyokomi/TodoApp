@@ -2,20 +2,18 @@ package dev.kyokomi.todoapp.ui.main.compose
 
 import android.text.format.DateUtils
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -28,7 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,9 +67,7 @@ fun HomeScreen(
     }
 
     LazyColumn(
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier,
+        modifier = modifier.padding(8.dp),
     ) {
         items(items = items) { item ->
             PhotographerCard(
@@ -79,6 +75,7 @@ fun HomeScreen(
                 onClickItem = onRemoveItem,
                 modifier = Modifier.fillMaxWidth(),
             )
+            Divider(modifier = Modifier.height(1.dp))
         }
     }
 }
@@ -91,8 +88,6 @@ private fun PhotographerCard(
 ) {
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(4.dp))
-            .background(MaterialTheme.colors.surface)
             .clickable { onClickItem(item) },
     ) {
         Image(
@@ -101,12 +96,14 @@ private fun PhotographerCard(
             ),
             contentDescription = null,
             modifier = Modifier
-                .size(64.dp),
+                .size(100.dp),
+            contentScale = ContentScale.Crop,
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.size(16.dp))
         Column(
             modifier = Modifier,
         ) {
+            Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = item.title,
                 fontWeight = FontWeight.Bold,

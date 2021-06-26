@@ -20,6 +20,7 @@ data class BottomItem(
     val name: String,
     val icon: ImageVector,
     val content: @Composable (NavBackStackEntry) -> Unit,
+    val actions: @Composable (RowScope.() -> Unit) = {},
 )
 
 @Composable
@@ -27,7 +28,6 @@ fun TodoAppScaffold(
     title: String,
     bottomNavigationItems: List<BottomItem> = listOf(),
     onClickBottomNavigationItem: (item: BottomItem) -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     var selectedBottomNavigationItem by remember { mutableStateOf(0) }
@@ -36,7 +36,11 @@ fun TodoAppScaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = title) },
-                actions = actions,
+                actions = if (bottomNavigationItems.isNotEmpty()) {
+                    bottomNavigationItems[selectedBottomNavigationItem].actions
+                } else {
+                    {}
+                },
             )
         },
         bottomBar = {

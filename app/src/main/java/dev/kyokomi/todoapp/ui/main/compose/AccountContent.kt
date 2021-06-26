@@ -3,13 +3,19 @@ package dev.kyokomi.todoapp.ui.main.compose
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +47,19 @@ fun AccountScreen(
             title = "Version",
             subTitle = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
         ),
+        ItemInfo(
+            title = "Dark Mode",
+            content = {
+                var switchValue by remember { mutableStateOf(true) }
+                // TODO: Preferenceとかのフラグを更新する。そのフラグをみてMaterialThemeを切り替える
+                Switch(
+                    checked = switchValue,
+                    onCheckedChange = {
+                        switchValue = it
+                    },
+                )
+            }
+        )
     )
     Column(modifier = modifier) {
         items.forEach {
@@ -53,6 +72,7 @@ private data class ItemInfo(
     val title: String,
     val subTitle: String = "",
     val onClickAction: () -> Unit = {},
+    val content: @Composable () -> Unit = {},
 )
 
 @Composable
@@ -62,7 +82,7 @@ private fun AccountListItem(
 ) {
     Box(modifier = modifier.clickable { itemInfo.onClickAction() }) {
         if (itemInfo.subTitle.isEmpty()) {
-            OneLineListItem(title = itemInfo.title)
+            OneLineListItem(title = itemInfo.title, content = itemInfo.content)
         } else {
             TwoLineListItem(title = itemInfo.title, subTitle = itemInfo.subTitle)
         }
@@ -74,19 +94,21 @@ private fun AccountListItem(
 private fun OneLineListItem(
     modifier: Modifier = Modifier,
     title: String,
+    content: @Composable () -> Unit = {},
 ) {
     Box(
         modifier = modifier.height(48.dp),
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 16.dp),
         ) {
             Text(
                 text = title,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(1.0f),
                 style = MaterialTheme.typography.subtitle1,
             )
+            content()
         }
     }
 }
