@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.kyokomi.todoapp.data.repository.TodoRepository
-import dev.kyokomi.todoapp.model.TodoItem
+import dev.kyokomi.todoapp.model.TodoItemEntity
 import java.time.OffsetDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ class TodoCreateViewModel @Inject constructor(
 
     fun addItem(text: String) {
         addItem(
-            TodoItem(
+            TodoItemEntity(
                 id = OffsetDateTime.now().toEpochSecond(),
                 title = text,
                 thumbnailUrl = imageContent.value?.toString()
@@ -30,7 +30,7 @@ class TodoCreateViewModel @Inject constructor(
         )
     }
 
-    private fun addItem(item: TodoItem) = viewModelScope.launch {
+    private fun addItem(item: TodoItemEntity) = viewModelScope.launch {
         todoRepository.addTodoItem(item)
     }
 

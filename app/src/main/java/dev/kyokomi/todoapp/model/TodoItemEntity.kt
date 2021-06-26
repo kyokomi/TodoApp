@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
 import java.time.OffsetDateTime
 
 @Entity(tableName = "todo_item")
-data class TodoItem(
+data class TodoItemEntity(
     @PrimaryKey val id: Long,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "thumbnail_url") val thumbnailUrl: String,

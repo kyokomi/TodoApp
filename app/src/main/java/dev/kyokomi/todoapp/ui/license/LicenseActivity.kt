@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import dagger.hilt.android.AndroidEntryPoint
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 
+@AndroidEntryPoint
 class LicenseActivity : ComponentActivity() {
     companion object {
         fun start(context: Context) {

@@ -5,7 +5,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.kyokomi.todoapp.model.AccountSettingEntity
+import dev.kyokomi.todoapp.ui.main.MainViewModel
 
 private val DarkColorPalette = darkColors(
     primary = Red300,
@@ -27,9 +32,15 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun TodoAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun TodoAppTheme(
+    mainViewModel: MainViewModel = viewModel(),
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
+    val accountSetting by mainViewModel.accountSetting.collectAsState(initial = AccountSettingEntity())
+
     MaterialTheme(
-        colors = if (darkTheme) DarkColorPalette else LightColorPalette,
+        colors = if (darkTheme && accountSetting.darkMode) DarkColorPalette else LightColorPalette,
         typography = Typography,
         shapes = Shapes,
         content = content

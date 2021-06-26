@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
-import dev.kyokomi.todoapp.model.TodoItem
+import dev.kyokomi.todoapp.model.TodoItemEntity
 import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
 import dev.kyokomi.todoapp.ui.main.MainViewModel
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
@@ -48,8 +48,8 @@ fun HomeContent(mainViewModel: MainViewModel) {
 
 @Composable
 fun HomeScreen(
-    items: List<TodoItem>,
-    onRemoveItem: (TodoItem) -> Unit,
+    items: List<TodoItemEntity>,
+    onRemoveItem: (TodoItemEntity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isItemLoading by remember { mutableStateOf(false) }
@@ -67,7 +67,7 @@ fun HomeScreen(
     }
 
     LazyColumn(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier,
     ) {
         items(items = items) { item ->
             PhotographerCard(
@@ -82,13 +82,14 @@ fun HomeScreen(
 
 @Composable
 private fun PhotographerCard(
-    item: TodoItem,
-    onClickItem: (TodoItem) -> Unit,
+    item: TodoItemEntity,
+    onClickItem: (TodoItemEntity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
-            .clickable { onClickItem(item) },
+            .clickable { onClickItem(item) }
+            .padding(8.dp),
     ) {
         Image(
             painter = rememberCoilPainter(
@@ -132,22 +133,22 @@ private fun PhotographerCard(
 @Composable
 fun PreviewHomeScreen() {
     val items = listOf(
-        TodoItem(
+        TodoItemEntity(
             1,
             "Learn compose",
             "https://avatars.githubusercontent.com/u/1456047",
         ),
-        TodoItem(
+        TodoItemEntity(
             2,
             "Take the codelab",
             "https://avatars.githubusercontent.com/u/1456047",
         ),
-        TodoItem(
+        TodoItemEntity(
             3,
             "Apply state",
             "https://avatars.githubusercontent.com/u/1456047",
         ),
-        TodoItem(
+        TodoItemEntity(
             4,
             "Build dynamic UIs",
             "https://avatars.githubusercontent.com/u/1456047",

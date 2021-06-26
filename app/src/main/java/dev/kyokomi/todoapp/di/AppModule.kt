@@ -7,8 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.kyokomi.todoapp.data.room.TodoAppDatabase
-import javax.inject.Qualifier
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -26,7 +26,12 @@ object AppModule {
         TodoAppDatabase.buildDatabase(context)
 
     @Provides
-    fun provideTodoItemDao(todoAppDatabase: TodoAppDatabase) = todoAppDatabase.todoItemDao()
+    fun provideTodoItemDao(todoAppDatabase: TodoAppDatabase) =
+        todoAppDatabase.todoItemDao()
+
+    @Provides
+    fun provideAccountSettingDao(todoAppDatabase: TodoAppDatabase) =
+        todoAppDatabase.accountSettingDao()
 }
 
 @Qualifier

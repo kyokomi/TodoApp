@@ -12,35 +12,49 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.kyokomi.todoapp.BuildConfig
+import dev.kyokomi.todoapp.model.AccountSettingEntity
 import dev.kyokomi.todoapp.ui.compose.TodoAppScaffold
 import dev.kyokomi.todoapp.ui.license.LicenseActivity
+import dev.kyokomi.todoapp.ui.main.AccountViewModel
 import dev.kyokomi.todoapp.ui.theme.TodoAppTheme
 
 @Composable
-fun AccountContent() {
-    AccountScreen()
+fun AccountContent(viewModel: AccountViewModel) {
+    val context = LocalContext.current
+    val accountSetting by viewModel.accountSetting.collectAsState(initial = AccountSettingEntity())
+    AccountScreen(
+        onClickLicense = {
+            LicenseActivity.start(context)
+        },
+        accountSetting = accountSetting,
+        setAccountSetting = {
+            viewModel.editAccountSetting(it)
+        },
+    )
 }
 
 @Composable
 fun AccountScreen(
+    accountSetting: AccountSettingEntity,
+    setAccountSetting: (AccountSettingEntity) -> Unit,
+    onClickLicense: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     val items = listOf(
         ItemInfo(
             title = "License",
             onClickAction = {
-                LicenseActivity.start(context)
+                onClickLicense()
             },
         ),
         ItemInfo(
@@ -50,12 +64,10 @@ fun AccountScreen(
         ItemInfo(
             title = "Dark Mode",
             content = {
-                var switchValue by remember { mutableStateOf(true) }
-                // TODO: Preferenceとかのフラグを更新する。そのフラグをみてMaterialThemeを切り替える
                 Switch(
-                    checked = switchValue,
+                    checked = accountSetting.darkMode,
                     onCheckedChange = {
-                        switchValue = it
+                        setAccountSetting(accountSetting.copy(darkMode = it))
                     },
                 )
             }
@@ -71,7 +83,7 @@ fun AccountScreen(
 private data class ItemInfo(
     val title: String,
     val subTitle: String = "",
-    val onClickAction: () -> Unit = {},
+    val onClickAction: (() -> Unit)? = null,
     val content: @Composable () -> Unit = {},
 )
 
@@ -80,7 +92,7 @@ private fun AccountListItem(
     modifier: Modifier = Modifier,
     itemInfo: ItemInfo,
 ) {
-    Box(modifier = modifier.clickable { itemInfo.onClickAction() }) {
+    Box(modifier = itemInfo.onClickAction?.let { modifier.clickable { it() } } ?: modifier) {
         if (itemInfo.subTitle.isEmpty()) {
             OneLineListItem(title = itemInfo.title, content = itemInfo.content)
         } else {
@@ -156,9 +168,18 @@ private fun TwoLineListItem(
 @Preview
 @Composable
 fun PreviewAccountScreen() {
+    val accountSettingEntity = remember { mutableStateOf(AccountSettingEntity()) }
+
     TodoAppTheme {
         TodoAppScaffold(title = "Account") { padding ->
-            AccountScreen(modifier = Modifier.padding(padding))
+            AccountScreen(
+                modifier = Modifier.padding(padding),
+                onClickLicense = {},
+                accountSetting = accountSettingEntity.value,
+                setAccountSetting = {
+                    accountSettingEntity.value = it
+                },
+            )
         }
     }
 }
